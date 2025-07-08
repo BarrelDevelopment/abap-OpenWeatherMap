@@ -1,0 +1,17 @@
+CLASS zbd_cl_open_weather_client DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC.
+
+  PUBLIC SECTION.
+
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zbd_cl_open_weather_client IMPLEMENTATION.
+
+
+ENDCLASS.
