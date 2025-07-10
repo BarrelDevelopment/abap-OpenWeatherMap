@@ -17,9 +17,6 @@ CLASS zbd_cl_open_weather_client DEFINITION
     DATA base_url    TYPE string
                      VALUE 'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={long}&appid={app_key}&units={unit}'.
 
-*    DATA base_url    TYPE string
-*         VALUE 'https://api.openweathermap.org/data/2.5/weather?lat=49.70&lon=10.89&appid=391419ea384228301f815931cbe36241&units=metric'.
-
     METHODS get_formatted_json_string
       IMPORTING json_string_in         TYPE string
       RETURNING VALUE(json_string_out) TYPE string
@@ -35,7 +32,45 @@ CLASS zbd_cl_open_weather_client DEFINITION
 ENDCLASS.
 
 
-CLASS zbd_cl_open_weather_client IMPLEMENTATION.
+
+CLASS ZBD_CL_OPEN_WEATHER_CLIENT IMPLEMENTATION.
+
+
+  METHOD create_url.
+    new_url = base_url.
+    REPLACE ALL OCCURRENCES OF '{lat}' IN new_url WITH lat.
+    REPLACE ALL OCCURRENCES OF '{long}' IN new_url WITH long.
+    REPLACE ALL OCCURRENCES OF '{app_key}' IN new_url WITH api_key.
+    REPLACE ALL OCCURRENCES OF '{unit}' IN new_url WITH unit.
+  ENDMETHOD.
+
+
+  METHOD get_formatted_json_string.
+    " cloud
+    " DATA(json_xstring) = cl_abap_conv_codepage=>create_out( )->convert( json_string_in ).
+    " on_premise
+    DATA(json_xstring) = cl_abap_codepage=>convert_to( json_string_in ).
+
+    " Check and pretty print JSON
+
+    DATA(reader) = cl_sxml_string_reader=>create( json_xstring ).
+    DATA(writer) = CAST if_sxml_writer(
+                          cl_sxml_string_writer=>create( type = if_sxml=>co_xt_json ) ).
+    writer->set_option( option = if_sxml_writer=>co_opt_linebreaks ).
+    writer->set_option( option = if_sxml_writer=>co_opt_indent ).
+    reader->next_node( ).
+    reader->skip_node( writer ).
+
+    " cloud
+    " DATA(json_formatted_string) = cl_abap_conv_codepage=>create_in( )->convert( CAST cl_sxml_string_writer( writer )->get_output( ) ).
+    " on premise
+    DATA(json_formatted_string) = cl_abap_codepage=>convert_from( CAST cl_sxml_string_writer( writer )->get_output( ) ).
+
+    json_string_out = escape( val    = json_formatted_string
+                              format = cl_abap_format=>e_xml_text  ).
+  ENDMETHOD.
+
+
   METHOD get_weather_by_cords.
     DATA(url) = base_url.
 
@@ -74,13 +109,6 @@ CLASS zbd_cl_open_weather_client IMPLEMENTATION.
     RETURN.
   ENDMETHOD.
 
-  METHOD create_url.
-    new_url = base_url.
-    REPLACE ALL OCCURRENCES OF '{lat}' IN new_url WITH lat.
-    REPLACE ALL OCCURRENCES OF '{long}' IN new_url WITH long.
-    REPLACE ALL OCCURRENCES OF '{app_key}' IN new_url WITH api_key.
-    REPLACE ALL OCCURRENCES OF '{unit}' IN new_url WITH unit.
-  ENDMETHOD.
 
   METHOD if_oo_adt_classrun~main.
     " Berlin, Germany
@@ -100,30 +128,5 @@ CLASS zbd_cl_open_weather_client IMPLEMENTATION.
     out->write( formatted_json_string ).
 
     http_client->close( ).
-  ENDMETHOD.
-
-  METHOD get_formatted_json_string.
-    " cloud
-    " DATA(json_xstring) = cl_abap_conv_codepage=>create_out( )->convert( json_string_in ).
-    " on_premise
-    DATA(json_xstring) = cl_abap_codepage=>convert_to( json_string_in ).
-
-    " Check and pretty print JSON
-
-    DATA(reader) = cl_sxml_string_reader=>create( json_xstring ).
-    DATA(writer) = CAST if_sxml_writer(
-                          cl_sxml_string_writer=>create( type = if_sxml=>co_xt_json ) ).
-    writer->set_option( option = if_sxml_writer=>co_opt_linebreaks ).
-    writer->set_option( option = if_sxml_writer=>co_opt_indent ).
-    reader->next_node( ).
-    reader->skip_node( writer ).
-
-    " cloud
-    " DATA(json_formatted_string) = cl_abap_conv_codepage=>create_in( )->convert( CAST cl_sxml_string_writer( writer )->get_output( ) ).
-    " on premise
-    DATA(json_formatted_string) = cl_abap_codepage=>convert_from( CAST cl_sxml_string_writer( writer )->get_output( ) ).
-
-    json_string_out = escape( val    = json_formatted_string
-                              format = cl_abap_format=>e_xml_text  ).
   ENDMETHOD.
 ENDCLASS.
