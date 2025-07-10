@@ -67,7 +67,7 @@ CLASS zbd_cl_open_weather_client IMPLEMENTATION.
     http_client->response->get_status( IMPORTING code   = http_status
                                                  reason = status_text ).
     IF http_status <> 200.
-
+      " Do something
     ENDIF.
 
     response = http_client->response->get_cdata( ).
@@ -83,7 +83,6 @@ CLASS zbd_cl_open_weather_client IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD if_oo_adt_classrun~main.
-
     " Berlin, Germany
     " Latitude and longitude coordinates are: 52.520008, 13.404954.
     DATA(result) = get_weather_by_cords( api_key = '391419ea384228301f815931cbe36241'
