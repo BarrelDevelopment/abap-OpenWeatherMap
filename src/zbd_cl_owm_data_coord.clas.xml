@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZBD_CL_OPEN_WEATHER_WEATHER</CLSNAME>
+    <CLSNAME>ZBD_CL_OWM_DATA_COORD</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>wea</DESCRIPT>
+    <DESCRIPT>Coordinates Lat and Long</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

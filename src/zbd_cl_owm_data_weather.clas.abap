@@ -1,4 +1,4 @@
-CLASS zbd_cl_open_weather_weather DEFINITION
+CLASS zbd_cl_owm_data_weather DEFINITION
   PUBLIC FINAL
   CREATE PUBLIC.
 
@@ -21,7 +21,7 @@ CLASS zbd_cl_open_weather_weather DEFINITION
 ENDCLASS.
 
 
-CLASS zbd_cl_open_weather_weather IMPLEMENTATION.
+CLASS zbd_cl_owm_data_weather IMPLEMENTATION.
   METHOD get_id.
     ret = id.
   ENDMETHOD.

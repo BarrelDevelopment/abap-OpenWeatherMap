@@ -1,4 +1,4 @@
-CLASS zbd_cl_open_weather_coord DEFINITION
+CLASS zbd_cl_owm_data_coord DEFINITION
   PUBLIC FINAL
   CREATE PUBLIC.
 
@@ -18,7 +18,7 @@ CLASS zbd_cl_open_weather_coord DEFINITION
 ENDCLASS.
 
 
-CLASS zbd_cl_open_weather_coord IMPLEMENTATION.
+CLASS zbd_cl_owm_data_coord IMPLEMENTATION.
   METHOD get_lon.
     ret = lon.
   ENDMETHOD.

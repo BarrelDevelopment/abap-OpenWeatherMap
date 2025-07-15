@@ -1,9 +1,13 @@
-CLASS zbd_cl_open_weather_client DEFINITION
+CLASS zbd_cl_owm_client DEFINITION
   PUBLIC FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
     INTERFACES if_oo_adt_classrun.
+
+    METHODS constructor IMPORTING api_key TYPE string.
+
+    methods query importing query_string type string.
 
     METHODS get_weather_by_cords IMPORTING api_key         TYPE string OPTIONAL
                                            lat             TYPE string OPTIONAL
@@ -32,14 +36,14 @@ CLASS zbd_cl_open_weather_client DEFINITION
 ENDCLASS.
 
 
-CLASS zbd_cl_open_weather_client IMPLEMENTATION.
+CLASS zbd_cl_owm_client IMPLEMENTATION.
   METHOD get_weather_by_cords.
     DATA(url) = base_url.
 
     url = replace_base_url( unit    = unit
-                      long    = log
-                      lat     = lat
-                      api_key = api_key ).
+                            long    = log
+                            lat     = lat
+                            api_key = api_key ).
 
     cl_http_client=>create_by_url( EXPORTING  url                = url
                                    IMPORTING  client             = http_client
@@ -82,7 +86,7 @@ CLASS zbd_cl_open_weather_client IMPLEMENTATION.
   METHOD if_oo_adt_classrun~main.
     " Berlin, Germany
     " Latitude and longitude coordinates are: 52.520008, 13.404954.
-    DATA(result) = get_weather_by_cords( api_key = '391419ea384228301f815931cbe36241'
+    DATA(result) = get_weather_by_cords( api_key = 'YOUR-API-KEY'
                                          lat     = '52.52'
                                          log     = '13.40'
                                          unit    = 'metric' ).
@@ -123,4 +127,12 @@ CLASS zbd_cl_open_weather_client IMPLEMENTATION.
     json_string_out = escape( val    = json_formatted_string
                               format = cl_abap_format=>e_xml_text  ).
   ENDMETHOD.
+
+  METHOD constructor.
+    me->api_key = api_key.
+  ENDMETHOD.
+  METHOD query.
+
+  ENDMETHOD.
+
 ENDCLASS.
